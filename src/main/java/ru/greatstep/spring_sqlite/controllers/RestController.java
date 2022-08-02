@@ -1,5 +1,9 @@
 package ru.greatstep.spring_sqlite.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.greatstep.spring_sqlite.models.User;
@@ -9,6 +13,8 @@ import ru.greatstep.spring_sqlite.service.UserService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -18,14 +24,33 @@ public class RestController {
 
     private List<LocalDate> totalDates;
 
+    private List<String> totalDatesToString = new ArrayList<>();
+
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    ObjectNode jsonNode = objectMapper.createObjectNode();
+
+
     @Autowired
-    public RestController(UserService userService) {
+    public RestController(UserService userService, List<LocalDate> totalDates) {
         this.userService = userService;
+        this.totalDates = totalDates;
     }
 
     @GetMapping("/rest")
     public List<User> findAllUsers() {
         return userService.findAll();
+    }
+
+    @RequestMapping(value = "/rest/invalid-dates",
+                    method = RequestMethod.GET,
+                    produces = "application/json")
+    public ContainerNode<ObjectNode> getInvalidDates() {
+        String[] totalInvalidDates = new String[totalDatesToString.size()];
+        totalDatesToString.toArray(totalInvalidDates);
+        ArrayNode arrayNode = jsonNode.putArray("invalid");
+        Arrays.stream(totalInvalidDates).forEach(arrayNode::add);
+        return jsonNode;
     }
 
     @GetMapping("/rest/{id}")
@@ -57,6 +82,19 @@ public class RestController {
         LocalDate date2 = LocalDate.parse(vacation[1],dateFormat);
         long days = ChronoUnit.DAYS.between(date, date2) + 1;
         user.setVacationDaysCount((int) days);
+
+
+        while(!date.isAfter(date2)) {
+            totalDates.add(date);
+            date = date.plusDays(1);
+        }
+        System.out.println(totalDates);
+
+        for(int i = 0;i<totalDates.size();i++){
+//        System.out.println(totalDates.get(i));
+        totalDatesToString.add(String.valueOf(totalDates.get(i)));
+            System.out.println(totalDatesToString);
+    }
     }
 
     @DeleteMapping("/rest/{id}")

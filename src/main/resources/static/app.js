@@ -1,4 +1,3 @@
-
 $(async function () {
     await getTableWithUsers();
     getDefaultModal();
@@ -14,8 +13,13 @@ const userFetchService = {
         'Referer': null
     },
     findAllUsers: async () => await fetch('rest'),
-    addNewUser: async (user) => await fetch('rest', {method: 'POST', headers: userFetchService.head, body: JSON.stringify(user)}),
+    addNewUser: async (user) => await fetch('rest', {
+        method: 'POST',
+        headers: userFetchService.head,
+        body: JSON.stringify(user)
+    }),
     findOneUser: async (id) => await fetch(`rest/${id}`),
+    findInvalidDate: async () => await fetch('rest/invalid-dates'),
     updateUser: async (user, id) => await fetch(`rest/${id}`, {
         method: 'PUT',
         headers: userFetchService.head,
@@ -68,9 +72,6 @@ async function getTableWithUsers() {
         defaultModal.modal('show');
     })
 }
-
-
-
 
 
 async function editUser(modal, id) {
@@ -134,6 +135,7 @@ async function editUser(modal, id) {
             modal.find('.modal-body').prepend(alert);
         }
     })
+
 }
 
 
@@ -237,20 +239,14 @@ async function getNewUserForm() {
 
 
 async function addNewUser() {
-    $('#addNewUserButton').click(async () =>  {
+    $('#addNewUserButton').click(async () => {
         let addUserForm = $('#defaultSomeForm')
         let fullName = addUserForm.find('#AddNewUserFullName').val().trim();
         let position = addUserForm.find('#AddNewUserPosition').val().trim();
-        // let vacationStart = addUserForm.find('#AddNewUserVacationStart').val().trim();
-        // let vacationEnd = addUserForm.find('#AddNewUserVacationEnd').val().trim();
-        // let vacationDaysCount = addUserForm.find('#AddNewUserVacationDaysCount').val().trim();
         let vacation = addUserForm.find('#input-picker').val().trim();
         let data = {
             fullName: fullName,
             position: position,
-            // vacationStart: vacationStart,
-            // vacationEnd: vacationEnd,
-            // vacationDaysCount: vacationDaysCount,
             vacation: vacation
         }
         /// здесь мы проверяем все ок или нет в response. Нужно на бэке сделать проверку, что можно установить такой отпуск.
@@ -259,9 +255,6 @@ async function addNewUser() {
             getTableWithUsers();
             addUserForm.find('#AddNewUserFullName').val('');
             addUserForm.find('#AddNewUserPosition').val('');
-            // addUserForm.find('#AddNewUserVacationStart').val('');
-            // addUserForm.find('#AddNewUserVacationEnd').val('');
-            // addUserForm.find('#AddNewUserVacationDaysCount').val('');
             addUserForm.find('#input-picker').val('');
 
 
@@ -277,7 +270,20 @@ async function addNewUser() {
         }
     })
 
+// получаем массив дат которые нельзя использовать.
+    let massive = [];
+
+    fetch('/rest/invalid-dates')
+        .then(response => response.json())
+        .then(data => {
+            for(let i = 0;i<data.invalid.length;i++){
+                massive.push(data.invalid[i])
+            }
+        });
+    console.log(massive);
+
     mobiscroll.datepicker('#input-picker', {
+
         controls: ['calendar'],
         select: 'range',
         locale: mobiscroll.localeRu,
@@ -286,16 +292,11 @@ async function addNewUser() {
         dateFormat: 'DD.MM.YYYY',
         rangeStartLabel: 'Начало',
         rangeEndLabel: 'Конец',
-        theme:'material',
+        theme: 'material',
         touchUi: true,
-        inRangeInvalid: false,
+        inRangeInvalid: true,
         rangeEndInvalid: false,
-        invalid: [
-            {
-                start: '07.08.2022',
-                end: '14.08.2022'
-            }
-        ]
+        invalid: massive
 
     });
 

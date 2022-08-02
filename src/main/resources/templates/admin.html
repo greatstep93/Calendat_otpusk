@@ -15,7 +15,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-
+    <link href="/css/mobiscroll.javascript.min.css" rel="stylesheet" />
+    <script src="/js/mobiscroll.javascript.min.js"></script>
 
 </head>
 
@@ -38,21 +39,11 @@
             </nav>
         </div>
     </div>
-    <!--Левая панель-->
 
     <br>
-    <div class="row">
-        <div class="col-md-2" style="background-color: white">
-            <ul class="nav flex-column nav-pills">
-                <li class="nav-item">
-                    <a class="nav-link active">MAIN</a>
-                </li>
-            </ul>
-        </div>
-
-
+    <br>
         <!--Правая панель-->
-        <div class="col-md-10">
+        <div class="col-md-12">
             <!--Заголовок страницы-->
             <div class="page-header">
                 <h2 style="text-align: center">
@@ -61,46 +52,41 @@
             </div>
             <!--Панель навигации-->
 
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" style="text-align: center;display: block">
 
-                <li class="nav-item">
-                    <a class="nav-link active">Список сотрудников</a>
-                </li>
-                <li class="nav-item" id="newUserLink">
+               <li class="nav-item" id="newUserLink" >
 
                 </li>
 
                 <li class="nav nav-item" id="formNewUser">
 
-                        <a class="nav-link" type="button" id="SliderNewUserForm">Добавить сотрудника</a>
-                   <div class="col-md-10" style="align-items: center">
+                        <button class="btn-primary" type="button" id="SliderNewUserForm">Добавить сотрудника</button>
+                    <br>
+
+                   <div class="col-md-12" style="align-items: center">
                     <div class="container-fluid" align="center">
                         <div class="d-flex justify-content-center">
+                            <br>
                             <div class="form-group">
-                                <form id="defaultSomeForm" data-hidden=true style="display: none">
-                                    <h4>Добавить сотрудника</h4>
-                                    <input  id="AddNewUserFirstName" type="text" placeholder="FirstName">
-                                    <input  id="AddNewUserLastName" type="text" placeholder="LastName">
-                                    <input class="form-control" id="AddNewUserAge" type="number" placeholder="age">
-                                    <input class="form-control" id="AddNewUserUsername" type="text" placeholder="Email">
-                                    <input class="form-control" id="AddNewUserPassword" type="password" placeholder="password">
-                                    <select class="custom-select"
-                                            size="3"
-                                            multiple name="roles"
-                                            id="AddNewUserRoles" required>
-                                        <option value="ROLE_ADMIN">ADMIN</option>
-                                        <option value="ROLE_USER">USER</option>
-                                    </select>
-                                    <br>
+                                <br>
+                                <form class="form-inline" id="defaultSomeForm" data-hidden=true style="display: none;margin-right: 30px" >
+<!--                                    <h4>Добавить сотрудника</h4>-->
+                                    <input  class="form-control" id="AddNewUserFullName" type="text" placeholder="ФИО">
+                                    <input class="form-control" id="AddNewUserPosition" type="text" placeholder="Должность">
+<!--                                    <input   class="form-control" id="AddNewUserVacationStart" type="text" placeholder="Дата начала отпуска">-->
+<!--                                    <input   class="form-control" id="AddNewUserVacationEnd" type="text" placeholder="Дата окончания отпуска">-->
+<!--                                    <input class="form-control" id="AddNewUserVacationDaysCount" type="number" placeholder="Количество дней отпуска">-->
+                                    <input class="form-control" id="input-picker" placeholder="Отпуск"/>
+<!--                                    <br>-->
 
-                                    <button class="btn btn-primary mb-2" type="button" id="addNewUserButton">Добавить сотрудника</button>
+                                    <button class="btn btn-primary mb-2" type="button" id="addNewUserButton" style="margin-top: 10px" >Добавить сотрудника</button>
                                 </form>
 
                             </div>
 
                         </div>
                     </div>
-</div>
+                </div>
                 </li>
 
             </ul>
@@ -119,13 +105,13 @@
 
                 <tr>
                     <th style="text-align: center;"> ID</th>
-                    <th style="text-align: center;"> Имя</th>
-                    <th style="text-align: center;"> Фамилия</th>
-                    <th style="text-align: center;"> Возраст</th>
-                    <th style="text-align: center;"> E-mail</th>
-                    <th style="text-align: center;"> Role</th>
-                    <th style="text-align: center;"> Edit</th>
-                    <th style="text-align: center;"> Delete</th>
+                    <th style="text-align: center;"> ФИО</th>
+                    <th style="text-align: center;"> Должность</th>
+                    <th style="text-align: center;"> Дата начала отпуска</th>
+                    <th style="text-align: center;"> Дата окончания отпуска</th>
+                    <th style="text-align: center;"> Количество дней отпуска</th>
+                    <th style="text-align: center;"> Редактировать</th>
+                    <th style="text-align: center;"> Удалить</th>
                 </tr>
                 </thead>
                 <!--Тело таблицы-->

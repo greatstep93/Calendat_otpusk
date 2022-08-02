@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class UserExcelExporter {
-    private XSSFWorkbook workbook;
-    private XSSFSheet sheet;
+    private final XSSFWorkbook workbook;
+    private final XSSFSheet sheet;
 
-    private List<User> userList;
+    private final List<User> userList;
 
     public UserExcelExporter(List<User> userList) {
         this.userList = userList;
@@ -56,27 +56,27 @@ public class UserExcelExporter {
         sheet.autoSizeColumn(0);
 
         cell = row.createCell(1);
-        cell.setCellValue("Возраст");
+        cell.setCellValue("ФИО");
         cell.setCellStyle(style);
         sheet.autoSizeColumn(1);
 
         cell = row.createCell(2);
-        cell.setCellValue("Имя");
+        cell.setCellValue("Должность");
         cell.setCellStyle(style);
         sheet.autoSizeColumn(2);
 
         cell = row.createCell(3);
-        cell.setCellValue("Фамилия");
+        cell.setCellValue("Дата начала отпуска");
         cell.setCellStyle(style);
         sheet.autoSizeColumn(3);
 
         cell = row.createCell(4);
-        cell.setCellValue("Пароль");
+        cell.setCellValue("Дата окончания отпуска");
         cell.setCellStyle(style);
         sheet.autoSizeColumn(4);
 
         cell = row.createCell(5);
-        cell.setCellValue("E-mail");
+        cell.setCellValue("Количество дней отпуска");
         cell.setCellStyle(style);
         sheet.autoSizeColumn(5);
 
@@ -101,29 +101,30 @@ public class UserExcelExporter {
             cell.setCellStyle(style);
 
             cell = row.createCell(1);
-            cell.setCellValue(user.getAge());
+            cell.setCellValue(user.getFullName());
             sheet.autoSizeColumn(1);
             cell.setCellStyle(style);
 
             cell = row.createCell(2);
-            cell.setCellValue(user.getFirstName());
+            cell.setCellValue(user.getPosition());
             sheet.autoSizeColumn(2);
             cell.setCellStyle(style);
 
             cell = row.createCell(3);
-            cell.setCellValue(user.getLastName());
+            cell.setCellValue(user.getVacationStart());
             sheet.autoSizeColumn(3);
             cell.setCellStyle(style);
 
             cell = row.createCell(4);
-            cell.setCellValue(user.getPassword());
+            cell.setCellValue(user.getVacationEnd());
             sheet.autoSizeColumn(4);
             cell.setCellStyle(style);
 
             cell = row.createCell(5);
-            cell.setCellValue(user.getUsername());
+            cell.setCellValue(user.getVacationDaysCount());
             sheet.autoSizeColumn(5);
             cell.setCellStyle(style);
+
         }
 
     }

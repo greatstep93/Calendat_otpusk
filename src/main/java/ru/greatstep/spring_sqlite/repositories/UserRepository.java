@@ -6,7 +6,7 @@ import ru.greatstep.spring_sqlite.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+    User findByFullName(String fullName);
 
     User findUserById(Long id);
 

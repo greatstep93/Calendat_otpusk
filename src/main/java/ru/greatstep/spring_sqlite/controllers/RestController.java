@@ -3,24 +3,23 @@ package ru.greatstep.spring_sqlite.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.greatstep.spring_sqlite.models.User;
-import ru.greatstep.spring_sqlite.repositories.RoleRepository;
 import ru.greatstep.spring_sqlite.service.UserService;
 
-import java.security.Principal;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
 
-    private final RoleRepository roleRepository;
-
-
     private final UserService userService;
 
+    private List<LocalDate> totalDates;
 
     @Autowired
-    public RestController(RoleRepository roleRepository, UserService userService) {
-        this.roleRepository = roleRepository;
+    public RestController(UserService userService) {
         this.userService = userService;
     }
 
@@ -31,22 +30,33 @@ public class RestController {
 
     @GetMapping("/rest/{id}")
     public User findOneUser(@PathVariable long id) {
-        User user = userService.findUserById(id);
-        return user;
+        return userService.findUserById(id);
     }
 
     @PostMapping("/rest")
     public User addNewUser(@RequestBody User user) {
-        roleRepository.saveAll(user.getRoles());
+        parseVacation(user);
+
         userService.save(user);
         return user;
     }
 
     @PutMapping("/rest/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable("id") long id) {
-        roleRepository.saveAll(user.getRoles());
+    public User updateUser(@RequestBody User user) {
+        parseVacation(user);
         userService.saveAndFlush(user);
         return user;
+    }
+
+    private void parseVacation(User user) {
+        String[] vacation = user.getVacation().split(" - ");
+        user.setVacationStart(vacation[0]);
+        user.setVacationEnd(vacation[1]);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(vacation[0], dateFormat);
+        LocalDate date2 = LocalDate.parse(vacation[1],dateFormat);
+        long days = ChronoUnit.DAYS.between(date, date2) + 1;
+        user.setVacationDaysCount((int) days);
     }
 
     @DeleteMapping("/rest/{id}")

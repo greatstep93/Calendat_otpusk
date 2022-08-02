@@ -1,7 +1,7 @@
+
 $(async function () {
     await getTableWithUsers();
     getDefaultModal();
-    // getActiveUserInfo();
     addNewUser();
     getNewUserForm()
 })
@@ -16,7 +16,6 @@ const userFetchService = {
     findAllUsers: async () => await fetch('rest'),
     addNewUser: async (user) => await fetch('rest', {method: 'POST', headers: userFetchService.head, body: JSON.stringify(user)}),
     findOneUser: async (id) => await fetch(`rest/${id}`),
-    getPrincipalInfo: async () => await fetch(`rest/principal`),
     updateUser: async (user, id) => await fetch(`rest/${id}`, {
         method: 'PUT',
         headers: userFetchService.head,
@@ -25,20 +24,6 @@ const userFetchService = {
     deleteUser: async (id) => await fetch(`rest/${id}`, {method: 'DELETE', headers: userFetchService.head})
 
 }
-
-// async function getActiveUserInfo() {
-//     let headInfo = $('#headInfo')
-//
-//
-//     let principal = await userFetchService.getPrincipalInfo();
-//     let user = principal.json();
-//     user.then(user => {
-//         let userInfoFilling = `
-//        <h6> <b> ${user.username}</b> with roles: ${user.rolesView}</h6>
-//     `
-//         headInfo.append(userInfoFilling)
-//     })
-// }
 
 
 async function getTableWithUsers() {
@@ -52,18 +37,18 @@ async function getTableWithUsers() {
                 let tableFilling = `$(
                         <tr>
                             <td style='text-align: center'>${user.id}</td>
-                            <td style='text-align: center'>${user.firstName}</td>
-                            <td style='text-align: center'>${user.lastName}</td>
-                            <td style='text-align: center'>${user.age}</td>
-                            <td style='text-align: center'>${user.username}</td>
-                            <td style='text-align: center'>${user.rolesView}</td>     
+                            <td style='text-align: center'>${user.fullName}</td>
+                            <td style='text-align: center'>${user.position}</td>
+                            <td style='text-align: center'>${user.vacationStart}</td>
+                            <td style='text-align: center'>${user.vacationEnd}</td>
+                            <td style='text-align: center'>${user.vacationDaysCount}</td> 
                             <td style='text-align: center'>
                                 <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-info" 
-                                data-toggle="modal" data-target="#someDefaultModal">Edit</button>
+                                data-toggle="modal" data-target="#someDefaultModal">Редактировать</button>
                             </td>
                             <td style='text-align: center'>
                                 <button type="button" data-userid="${user.id}" data-action="delete" class="btn btn-danger" 
-                                data-toggle="modal" data-target="#someDefaultModal">Delete</button>
+                                data-toggle="modal" data-target="#someDefaultModal">Удалить</button>
                             </td>
                         </tr>
                 )`;
@@ -89,13 +74,15 @@ async function getTableWithUsers() {
 
 
 async function editUser(modal, id) {
+
+
     let preuser = await userFetchService.findOneUser(id);
     let user = preuser.json();
 
-    modal.find('.modal-title').html('Edit user');
+    modal.find('.modal-title').html('Редактировать');
 
-    let editButton = `<button  class="btn btn-primary" id="editButton">Edit</button>`;
-    let closeButton = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>`
+    let editButton = `<button  class="btn btn-primary" id="editButton">Изменить</button>`;
+    let closeButton = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>`
     modal.find('.modal-footer').append(editButton);
     modal.find('.modal-footer').append(closeButton);
 
@@ -106,24 +93,12 @@ async function editUser(modal, id) {
             <div class="col-7">
                 <strong><labelfor="id">ID</label></strong>
                 <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>
-                <strong><labelfor="firstName">First Name</label></strong>
-                <input class="form-control" type="text" id="firstName" value="${user.firstName}"><br>      
-                <strong><labelfor="lastName">Last Name</label></strong>   
-                <input class="form-control" type="text" id="lastName" value="${user.lastName}"><br>
-                <strong><labelfor="age">Age</label></strong>
-                <input class="form-control" id="age" type="number" value="${user.age}"> <br>       
-                <strong><labelfor="username">E-mail</label></strong>                                       
-                <input class="form-control" type="text" id="username" value="${user.username}"><br>
-                <strong><labelfor="password">Password</label></strong>  
-                <input class="form-control" type="password" id="password" value="${user.password}"><br>
-                <strong><labelfor="roles">Roles</label></strong>  
-                <select class="custom-select"
-                        size="3"
-                        multiple name="roles"
-                        id="roles" required>
-                <option value="ROLE_ADMIN">ADMIN</option>
-                <option selected value="ROLE_USER">USER</option>
-                </select>     
+                <strong><labelfor="fullName">ФИО</label></strong>
+                <input class="form-control" type="text" id="fullName" value="${user.fullName}"><br>      
+                <strong><labelfor="position">Должность</label></strong>
+                <input class="form-control" type="text" id="position" value="${user.position}"><br>  
+                <strong><labelfor="input-picker">Отпуск</label></strong>         
+                <input class="form-control" id="input-picker" value="${user.vacation}" placeholder="Отпуск"/>               
                 </div>           
             </form>
             </div>
@@ -133,20 +108,14 @@ async function editUser(modal, id) {
 
     $("#editButton").on('click', async () => {
         let id = modal.find("#id").val().trim();
-        let firstName = modal.find("#firstName").val().trim();
-        let lastName = modal.find("#lastName").val().trim();
-        let username = modal.find("#username").val().trim();
-        let password = modal.find("#password").val().trim();
-        let age = modal.find("#age").val().trim();
-        let roles = modal.find("#roles").val();
+        let fullName = modal.find("#fullName").val().trim();
+        let position = modal.find("#position").val().trim();
+        let vacation = modal.find("#input-picker").val().trim();
         let data = {
             id: id,
-            firstName: firstName,
-            lastName: lastName,
-            age: age,
-            username: username,
-            password: password,
-            roles: roles
+            fullName: fullName,
+            position: position,
+            vacation: vacation
 
         }
         const response = await userFetchService.updateUser(data, id);
@@ -172,10 +141,10 @@ async function deleteUser(modal, id) {
     let preUser = await userFetchService.findOneUser(id);
     let user = preUser.json();
 
-    modal.find('.modal-title').html('Delete User');
+    modal.find('.modal-title').html('Удалить');
 
-    let deleteButton = `<button  class="btn btn-danger" id="deleteButton">Delete</button>`;
-    let closeButtonDelete = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>`
+    let deleteButton = `<button  class="btn btn-danger" id="deleteButton">Удалить</button>`;
+    let closeButtonDelete = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>`
     modal.find('.modal-footer').append(deleteButton);
     modal.find('.modal-footer').append(closeButtonDelete);
 
@@ -186,25 +155,17 @@ async function deleteUser(modal, id) {
             <div class="col-7">
                 <strong><labelfor="id">ID</label></strong>
                 <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>
-                <strong><labelfor="firstName">First Name</label></strong>
-                <input class="form-control" type="text" id="firstName" value="${user.firstName} "disabled><br>      
-                <strong><labelfor="lastName">Last Name</label></strong>   
-                <input class="form-control" type="text" id="lastName" value="${user.lastName} "disabled><br>
-                <strong><labelfor="age">Age</label></strong>
-                <input class="form-control" type="text" id="age" value="${user.age} "disabled><br>      
-                <strong><labelfor="username">E-mail</label></strong>                                       
-                <input class="form-control" type="text" id="username" value="${user.username} "disabled><br>
-                <strong><labelfor="password">Password</label></strong>  
-                <input class="form-control" type="password" id="password" value="${user.password} "disabled><br>
-                <strong><labelfor="roles">Roles</label></strong>  
-                <select class="custom-select"
-                        size="3"
-                        multiple name="roles"
-                        id="roles" required disabled>
-                <option value="ROLE_ADMIN">ADMIN</option>
-                <option value="ROLE_USER">USER</option>
-                </select>     
-                </div>           
+                <strong><labelfor="fullName">ФИО</label></strong>
+                <input class="form-control" type="text" id="fullName" value="${user.fullName}" disabled><br>      
+                <strong><labelfor="position">Должность</label></strong>
+                <input class="form-control" type="text" id="position" value="${user.position}" disabled><br>           
+                <strong><labelfor="vacationStart">Дата начала отпуска</label></strong>
+                <input class="form-control" type="text" id="vacationStart" value="${user.vacationStart}" disabled><br>
+                <strong><labelfor="vacationEnd">Дата окончания отпуска</label></strong>
+                <input class="form-control" type="text" id="vacationEnd" value="${user.vacationEnd}" disabled><br>
+                <strong><labelfor="position">Количество дней отпуска</label></strong>
+                <input class="form-control" type="text" id="vacationDaysCount" value="${user.vacationDaysCount}" disabled><br>                  
+                </div>            
             </form>
             </div>
         `;
@@ -265,11 +226,11 @@ async function getNewUserForm() {
         if (form.attr("data-hidden") === "true") {
             form.attr('data-hidden', 'false');
             form.show();
-            button.text('Hide panel');
+            button.text('Добавить сотрудника');
         } else {
             form.attr('data-hidden', 'true');
             form.hide();
-            button.text('Show panel');
+            button.text('Добавить сотрудника');
         }
     })
 }
@@ -278,29 +239,30 @@ async function getNewUserForm() {
 async function addNewUser() {
     $('#addNewUserButton').click(async () =>  {
         let addUserForm = $('#defaultSomeForm')
-        let firstName = addUserForm.find('#AddNewUserFirstName').val().trim();
-        let lastName = addUserForm.find('#AddNewUserLastName').val().trim();
-        let age = addUserForm.find('#AddNewUserAge').val().trim();
-        let username = addUserForm.find('#AddNewUserUsername').val().trim();
-        let password = addUserForm.find('#AddNewUserPassword').val().trim();
-        let roles = addUserForm.find('#AddNewUserRoles').val()
+        let fullName = addUserForm.find('#AddNewUserFullName').val().trim();
+        let position = addUserForm.find('#AddNewUserPosition').val().trim();
+        // let vacationStart = addUserForm.find('#AddNewUserVacationStart').val().trim();
+        // let vacationEnd = addUserForm.find('#AddNewUserVacationEnd').val().trim();
+        // let vacationDaysCount = addUserForm.find('#AddNewUserVacationDaysCount').val().trim();
+        let vacation = addUserForm.find('#input-picker').val().trim();
         let data = {
-            firstName: firstName,
-            lastName: lastName,
-            age: age,
-            username: username,
-            password: password,
-            roles: roles
+            fullName: fullName,
+            position: position,
+            // vacationStart: vacationStart,
+            // vacationEnd: vacationEnd,
+            // vacationDaysCount: vacationDaysCount,
+            vacation: vacation
         }
+        /// здесь мы проверяем все ок или нет в response. Нужно на бэке сделать проверку, что можно установить такой отпуск.
         const response = await userFetchService.addNewUser(data);
         if (response.ok) {
             getTableWithUsers();
-            addUserForm.find('#AddNewUserFirstName').val('');
-            addUserForm.find('#AddNewUserLastName').val('');
-            addUserForm.find('#AddNewUserAge').val('');
-            addUserForm.find('#AddNewUserUsername').val('');
-            addUserForm.find('#AddNewUserPassword').val('');
-            addUserForm.find('#AddNewUserRoles').val('');
+            addUserForm.find('#AddNewUserFullName').val('');
+            addUserForm.find('#AddNewUserPosition').val('');
+            // addUserForm.find('#AddNewUserVacationStart').val('');
+            // addUserForm.find('#AddNewUserVacationEnd').val('');
+            // addUserForm.find('#AddNewUserVacationDaysCount').val('');
+            addUserForm.find('#input-picker').val('');
 
 
         } else {
@@ -314,6 +276,44 @@ async function addNewUser() {
             addUserForm.prepend(alert)
         }
     })
+
+    mobiscroll.datepicker('#input-picker', {
+        controls: ['calendar'],
+        select: 'range',
+        locale: mobiscroll.localeRu,
+        rangeHighlight: true,
+        showRangeLabels: true,
+        dateFormat: 'DD.MM.YYYY',
+        rangeStartLabel: 'Начало',
+        rangeEndLabel: 'Конец',
+        theme:'material',
+        touchUi: true,
+        inRangeInvalid: false,
+        rangeEndInvalid: false,
+        invalid: [
+            {
+                start: '07.08.2022',
+                end: '14.08.2022'
+            }
+        ]
+
+    });
+
+    // mobiscroll.datepicker('#input-picker', {
+    //     controls: ['calendar'],
+    //     select: 'range',
+    //     locale: mobiscroll.localeRu,
+    //     dateFormat: 'DD.MM.YYYY',
+    //     inRangeInvalid: true,
+    //     rangeEndInvalid: false,
+    //     invalid: [
+    //         {
+    //             start: '2022-08-07T09:47:00.000Z',
+    //             end: '2022-08-14T09:47:00.000Z'
+    //         }
+    //     ]
+    // });
+
 }
 
 

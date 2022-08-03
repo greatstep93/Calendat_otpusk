@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.greatstep.spring_sqlite.models.SelectedDate;
 import ru.greatstep.spring_sqlite.models.User;
+import ru.greatstep.spring_sqlite.service.SelectedDateService;
 import ru.greatstep.spring_sqlite.service.UserService;
 
 
@@ -22,7 +24,9 @@ public class RestController {
 
     private final UserService userService;
 
-    private List<LocalDate> totalDates;
+    private final SelectedDateService selectedDateService;
+
+    private List<SelectedDate> selectedDate;
 
     private List<String> totalDatesToString = new ArrayList<>();
 
@@ -32,9 +36,10 @@ public class RestController {
 
 
     @Autowired
-    public RestController(UserService userService, List<LocalDate> totalDates) {
+    public RestController(UserService userService, List<SelectedDate> selectedDate,SelectedDateService selectedDateService) {
         this.userService = userService;
-        this.totalDates = totalDates;
+        this.selectedDate = selectedDate;
+        this.selectedDateService = selectedDateService;
     }
 
     @GetMapping("/rest")
@@ -83,22 +88,44 @@ public class RestController {
         long days = ChronoUnit.DAYS.between(date, date2) + 1;
         user.setVacationDaysCount((int) days);
 
+        SelectedDate selectedDate1 = new SelectedDate(date);
+        SelectedDate selectedDate2 = new SelectedDate(date2);
 
-        while(!date.isAfter(date2)) {
-            totalDates.add(date);
-            date = date.plusDays(1);
+        while(!selectedDate1.getLocalDate().isAfter(selectedDate2.getLocalDate())) {
+            selectedDate.add(new SelectedDate(selectedDate1.getLocalDate()));
+            selectedDate1.setLocalDate(selectedDate1.getLocalDate().plusDays(1));
         }
-        System.out.println(totalDates);
+        System.out.println(selectedDate);
+        selectedDateService.saveAll(selectedDate);
 
-        for(int i = 0;i<totalDates.size();i++){
+        for(int i = 0; i< selectedDate.size(); i++){
 //        System.out.println(totalDates.get(i));
-        totalDatesToString.add(String.valueOf(totalDates.get(i)));
+        totalDatesToString.add(String.valueOf(selectedDate.get(i)));
             System.out.println(totalDatesToString);
     }
     }
 
     @DeleteMapping("/rest/{id}")
     public void deleteUser(@PathVariable long id) {
+        User user = userService.findUserById(id);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(user.getVacationStart(),dateFormat);
+        LocalDate date2 = LocalDate.parse(user.getVacationEnd(),dateFormat);
+        List<SelectedDate> removeSelectDateList = new ArrayList<>();
+        SelectedDate selectedDate1 = new SelectedDate(date);
+        SelectedDate selectedDate2 = new SelectedDate(date2);
+
+        while(!selectedDate1.getLocalDate().isAfter(selectedDate2.getLocalDate())) {
+            removeSelectDateList.add(new SelectedDate(selectedDate1.getLocalDate()));
+            selectedDate1.setLocalDate(selectedDate1.getLocalDate().plusDays(1));
+        }
+        System.out.println(removeSelectDateList);
+        for (SelectedDate value : removeSelectDateList) {
+            totalDatesToString.remove(String.valueOf(value.getLocalDate()));
+            selectedDateService.removeByLocalDate(value.getLocalDate());
+        }
+//        selectedDate.removeAll(removeSelectDateList);
+
         userService.deleteById(id);
     }
 

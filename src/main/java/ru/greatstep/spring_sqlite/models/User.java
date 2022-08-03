@@ -3,12 +3,9 @@ package ru.greatstep.spring_sqlite.models;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
+import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -39,6 +36,12 @@ public class User {
 
     @Column(name = "vacation")
     private String vacation;
+
+    @ManyToMany
+    @JoinTable(name = "users_dates",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "date_id"))
+    private Collection<SelectedDate> selectedDates;
 
     @Override
     public String toString() {

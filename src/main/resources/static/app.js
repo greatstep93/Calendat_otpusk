@@ -1,8 +1,9 @@
 $(async function () {
     await getTableWithUsers();
-    getDefaultModal();
-    addNewUser();
-    getNewUserForm()
+    await getDefaultModal();
+    await addNewUser();
+    await getNewUserForm();
+    await addDate();
 })
 
 
@@ -46,10 +47,10 @@ async function getTableWithUsers() {
                             <td style='text-align: center'>${user.vacationStart}</td>
                             <td style='text-align: center'>${user.vacationEnd}</td>
                             <td style='text-align: center'>${user.vacationDaysCount}</td> 
-                            <td style='text-align: center'>
+                   <!--         <td style='text-align: center'>
                                 <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-info" 
                                 data-toggle="modal" data-target="#someDefaultModal">Редактировать</button>
-                            </td>
+                            </td> -->
                             <td style='text-align: center'>
                                 <button type="button" data-userid="${user.id}" data-action="delete" class="btn btn-danger" 
                                 data-toggle="modal" data-target="#someDefaultModal">Удалить</button>
@@ -74,69 +75,70 @@ async function getTableWithUsers() {
 }
 
 
-async function editUser(modal, id) {
-
-
-    let preuser = await userFetchService.findOneUser(id);
-    let user = preuser.json();
-
-    modal.find('.modal-title').html('Редактировать');
-
-    let editButton = `<button  class="btn btn-primary" id="editButton">Изменить</button>`;
-    let closeButton = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>`
-    modal.find('.modal-footer').append(editButton);
-    modal.find('.modal-footer').append(closeButton);
-
-    user.then(user => {
-        let bodyForm = `
-            <div align="center">
-            <form class="form-group" id="editUser" >
-            <div class="col-7">
-                <strong><labelfor="id">ID</label></strong>
-                <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>
-                <strong><labelfor="fullName">ФИО</label></strong>
-                <input class="form-control" type="text" id="fullName" value="${user.fullName}"><br>      
-                <strong><labelfor="position">Должность</label></strong>
-                <input class="form-control" type="text" id="position" value="${user.position}"><br>  
-                <strong><labelfor="input-picker">Отпуск</label></strong>         
-                <input class="form-control" id="input-picker" value="${user.vacation}" placeholder="Отпуск"/>               
-                </div>           
-            </form>
-            </div>
-        `;
-        modal.find('.modal-body').append(bodyForm);
-    })
-
-    $("#editButton").on('click', async () => {
-        let id = modal.find("#id").val().trim();
-        let fullName = modal.find("#fullName").val().trim();
-        let position = modal.find("#position").val().trim();
-        let vacation = modal.find("#input-picker").val().trim();
-        let data = {
-            id: id,
-            fullName: fullName,
-            position: position,
-            vacation: vacation
-
-        }
-        const response = await userFetchService.updateUser(data, id);
-
-        if (response.ok) {
-            getTableWithUsers();
-            modal.modal('hide');
-        } else {
-            let body = await response.json();
-            let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
-                            ${body.info}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>`;
-            modal.find('.modal-body').prepend(alert);
-        }
-    })
-
-}
+// async function editUser(modal, id) {
+//
+//
+//     let preuser = await userFetchService.findOneUser(id);
+//     let user = preuser.json();
+//
+//     modal.find('.modal-title').html('Редактировать');
+//
+//     let editButton = `<button  class="btn btn-primary" id="editButton">Изменить</button>`;
+//     let closeButton = `<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>`
+//     modal.find('.modal-footer').append(editButton);
+//     modal.find('.modal-footer').append(closeButton);
+//
+//     user.then(user => {
+//         let bodyForm = `
+//             <div align="center">
+//             <form class="form-group" id="editUser" >
+//             <div class="col-7">
+//                 <strong><labelfor="id">ID</label></strong>
+//                 <input type="text" class="form-control" id="id" name="id" value="${user.id}" disabled><br>
+//                 <strong><labelfor="fullName">ФИО</label></strong>
+//                 <input class="form-control" type="text" id="fullName" value="${user.fullName}"><br>
+//                 <strong><labelfor="position">Должность</label></strong>
+//                 <input class="form-control" type="text" id="position" value="${user.position}"><br>
+//                 <strong><labelfor="input-picker">Отпуск</label></strong>
+//                 <input class="form-control" id="input-picker" value="${user.vacation}" placeholder="Отпуск"/>
+//                 </div>
+//             </form>
+//             </div>
+//         `;
+//         modal.find('.modal-body').append(bodyForm);
+//     })
+//
+//     $("#editButton").on('click', async () => {
+//         let id = modal.find("#id").val().trim();
+//         let fullName = modal.find("#fullName").val().trim();
+//         let position = modal.find("#position").val().trim();
+//         let vacation = modal.find("#input-picker").val().trim();
+//         let data = {
+//             id: id,
+//             fullName: fullName,
+//             position: position,
+//             vacation: vacation
+//
+//         }
+//         const response = await userFetchService.updateUser(data, id);
+//
+//         if (response.ok) {
+//             await getTableWithUsers();
+//             await addDate();
+//             modal.modal('hide');
+//         } else {
+//             let body = await response.json();
+//             let alert = `<div class="alert alert-danger alert-dismissible fade show col-12" role="alert" id="sharaBaraMessageError">
+//                             ${body.info}
+//                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//                                 <span aria-hidden="true">&times;</span>
+//                             </button>
+//                         </div>`;
+//             modal.find('.modal-body').prepend(alert);
+//         }
+//     })
+//
+// }
 
 
 async function deleteUser(modal, id) {
@@ -178,9 +180,9 @@ async function deleteUser(modal, id) {
         let id = modal.find("#id").val().trim();
 
         const response = await userFetchService.deleteUser(id);
-
         if (response.ok) {
-            getTableWithUsers();
+            await getTableWithUsers();
+            await addDate();
             modal.modal('hide');
         } else {
             let body = await response.json();
@@ -243,7 +245,7 @@ async function addNewUser() {
         let addUserForm = $('#defaultSomeForm')
         let fullName = addUserForm.find('#AddNewUserFullName').val().trim();
         let position = addUserForm.find('#AddNewUserPosition').val().trim();
-        let vacation = addUserForm.find('#input-picker').val().trim();
+        let vacation = addUserForm.find('#AddNewUserVacation').val().trim();
         let data = {
             fullName: fullName,
             position: position,
@@ -251,11 +253,14 @@ async function addNewUser() {
         }
         /// здесь мы проверяем все ок или нет в response. Нужно на бэке сделать проверку, что можно установить такой отпуск.
         const response = await userFetchService.addNewUser(data);
+
         if (response.ok) {
-            getTableWithUsers();
+
+            await getTableWithUsers();
+            await addDate();
             addUserForm.find('#AddNewUserFullName').val('');
             addUserForm.find('#AddNewUserPosition').val('');
-            addUserForm.find('#input-picker').val('');
+            addUserForm.find('#AddNewUserVacation').val('');
 
 
         } else {
@@ -270,21 +275,27 @@ async function addNewUser() {
         }
     })
 
+}
+
 // получаем массив дат которые нельзя использовать.
+
+async function addDate() {
     let massive = [];
 
     fetch('/rest/invalid-dates')
         .then(response => response.json())
         .then(data => {
-            for(let i = 0;i<data.invalid.length;i++){
+            for (let i = 0; i < data.invalid.length; i++) {
                 massive.push(data.invalid[i])
             }
         });
     console.log(massive);
 
-    mobiscroll.datepicker('#input-picker', {
+    mobiscroll.datepicker('#AddNewUserVacation', {
 
         controls: ['calendar'],
+        display: 'center',
+        touchUi: false,
         select: 'range',
         locale: mobiscroll.localeRu,
         rangeHighlight: true,
@@ -293,28 +304,16 @@ async function addNewUser() {
         rangeStartLabel: 'Начало',
         rangeEndLabel: 'Конец',
         theme: 'material',
-        touchUi: true,
-        inRangeInvalid: true,
+        inRangeInvalid: false,
         rangeEndInvalid: false,
-        invalid: massive
-
+        invalid: massive,
+        responsive: {
+            large: {
+                controls: ['calendar'],
+                display: 'anchored',
+                touchUi: true
+            }
+        },
+        defaultSlection: null
     });
-
-    // mobiscroll.datepicker('#input-picker', {
-    //     controls: ['calendar'],
-    //     select: 'range',
-    //     locale: mobiscroll.localeRu,
-    //     dateFormat: 'DD.MM.YYYY',
-    //     inRangeInvalid: true,
-    //     rangeEndInvalid: false,
-    //     invalid: [
-    //         {
-    //             start: '2022-08-07T09:47:00.000Z',
-    //             end: '2022-08-14T09:47:00.000Z'
-    //         }
-    //     ]
-    // });
-
 }
-
-

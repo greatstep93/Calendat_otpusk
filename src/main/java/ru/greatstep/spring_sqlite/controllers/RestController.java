@@ -4,10 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.sql.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.greatstep.spring_sqlite.models.SelectedDate;
 import ru.greatstep.spring_sqlite.models.User;
-import ru.greatstep.spring_sqlite.service.UserService;
+import ru.greatstep.spring_sqlite.service.absctract.SelectedDateService;
+import ru.greatstep.spring_sqlite.service.absctract.UserService;
 
 
 import java.time.LocalDate;
@@ -17,10 +22,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
+@Setter
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
 
     private final UserService userService;
+
+    private final SelectedDateService dateService;
 
     private List<LocalDate> totalDates;
 
@@ -34,8 +43,9 @@ public class RestController {
 
 
     @Autowired
-    public RestController(UserService userService, List<LocalDate> totalDates, List<LocalDate> deleteDates) {
+    public RestController(UserService userService, SelectedDateService dateService, List<LocalDate> totalDates, List<LocalDate> deleteDates) {
         this.userService = userService;
+        this.dateService = dateService;
         this.totalDates = totalDates;
         this.deleteDates = deleteDates;
     }
@@ -49,10 +59,9 @@ public class RestController {
             method = RequestMethod.GET,
             produces = "application/json")
     public ContainerNode<ObjectNode> getInvalidDates() {
-        String[] totalInvalidDates = new String[totalDatesToString.size()];
-        totalDatesToString.toArray(totalInvalidDates);
+
         ArrayNode arrayNode = jsonNode.putArray("invalid");
-        Arrays.stream(totalInvalidDates).forEach(arrayNode::add);
+        Arrays.stream(dateService.findAllDates()).forEach(arrayNode::add);
         return jsonNode;
     }
 
@@ -87,17 +96,24 @@ public class RestController {
         user.setVacationDaysCount((int) days);
 
 
+//        while (!date.isAfter(date2)) {
+//            totalDates.add(date);
+//            date = date.plusDays(1);
+//        }
+
         while (!date.isAfter(date2)) {
-            totalDates.add(date);
+            SelectedDate selectedDate = new SelectedDate();
+            selectedDate.setDate(date.toString());
+            dateService.save(selectedDate);
             date = date.plusDays(1);
         }
-//        System.out.println(totalDates);
 
-        for (int i = 0; i < totalDates.size(); i++) {
-//        System.out.println(totalDates.get(i));
-            totalDatesToString.add(String.valueOf(totalDates.get(i)));
-            System.out.println(totalDatesToString);
-        }
+
+//        for (int i = 0; i < totalDates.size(); i++) {
+//
+//            totalDatesToString.add(String.valueOf(totalDates.get(i)));
+//            System.out.println(totalDatesToString);
+//        }
     }
 
     @DeleteMapping("/rest/{id}")
@@ -107,18 +123,23 @@ public class RestController {
         LocalDate date = LocalDate.parse(user.getVacationStart(), dateFormat);
         LocalDate date2 = LocalDate.parse(user.getVacationEnd(), dateFormat);
 
+//        while (!date.isAfter(date2)) {
+//            deleteDates.add(date);
+//            date = date.plusDays(1);
+//        }
+
         while (!date.isAfter(date2)) {
-            deleteDates.add(date);
+            SelectedDate selectedDate = dateService.findByDate(date.toString());
+            dateService.deleteById(selectedDate.getId());
             date = date.plusDays(1);
         }
-//        System.out.println(deleteDates);
 
-        for (int i = 0; i < deleteDates.size(); i++) {
-//        System.out.println(totalDates.get(i));
-            totalDatesToString.remove(String.valueOf(totalDates.get(i)));
-            totalDates.remove(deleteDates.get(i));
-            System.out.println(totalDatesToString);
-        }
+
+//        for (int i = 0; i < deleteDates.size(); i++) {
+//            totalDatesToString.remove(String.valueOf(totalDates.get(i)));
+//            totalDates.remove(deleteDates.get(i));
+//            System.out.println(totalDatesToString);
+//        }
 
 
         userService.deleteById(id);

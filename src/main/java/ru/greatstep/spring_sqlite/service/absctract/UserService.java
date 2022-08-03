@@ -1,4 +1,4 @@
-package ru.greatstep.spring_sqlite.service;
+package ru.greatstep.spring_sqlite.service.absctract;
 
 import ru.greatstep.spring_sqlite.models.User;
 import java.util.List;
@@ -17,6 +17,8 @@ public interface UserService {
     void saveAndFlush(User user);
 
     void deleteById(long id);
+    void initializationTestUsers();
+
 
 
 }

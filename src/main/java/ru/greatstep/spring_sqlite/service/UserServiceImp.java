@@ -3,6 +3,7 @@ package ru.greatstep.spring_sqlite.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.greatstep.spring_sqlite.models.User;
 import ru.greatstep.spring_sqlite.repositories.UserRepository;
 import java.util.List;

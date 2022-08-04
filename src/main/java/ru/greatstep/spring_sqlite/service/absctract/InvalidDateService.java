@@ -13,9 +13,9 @@ public interface InvalidDateService {
 
     InvalidDate findInvalidDateById(Long id);
 
-    void save(InvalidDate selectedDate);
+    void save(InvalidDate invalidDate);
 
-    void saveAndFlush(InvalidDate selectedDate);
+    void saveAndFlush(InvalidDate invalidDate);
 
     void deleteById(Long id);
 
@@ -24,4 +24,6 @@ public interface InvalidDateService {
     boolean existsInvalidDateByDate(String date);
 
     int countInvalidDateByDate(String date);
+
+    void deleteByDate(String date);
 }

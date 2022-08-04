@@ -8,8 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.greatstep.spring_sqlite.models.InvalidDate;
 import ru.greatstep.spring_sqlite.models.SelectedDate;
 import ru.greatstep.spring_sqlite.models.User;
+import ru.greatstep.spring_sqlite.service.absctract.InvalidDateService;
 import ru.greatstep.spring_sqlite.service.absctract.SelectedDateService;
 import ru.greatstep.spring_sqlite.service.absctract.UserService;
 
@@ -30,11 +32,7 @@ public class RestController {
 
     private final SelectedDateService dateService;
 
-    private List<LocalDate> totalDates;
-
-    private List<LocalDate> deleteDates;
-
-    private List<String> totalDatesToString = new ArrayList<>();
+    private final InvalidDateService invalidDateService;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -42,11 +40,10 @@ public class RestController {
 
 
     @Autowired
-    public RestController(UserService userService, SelectedDateService dateService, List<LocalDate> totalDates, List<LocalDate> deleteDates) {
+    public RestController(UserService userService, SelectedDateService dateService, InvalidDateService invalidDateService) {
         this.userService = userService;
         this.dateService = dateService;
-        this.totalDates = totalDates;
-        this.deleteDates = deleteDates;
+        this.invalidDateService = invalidDateService;
     }
 
     @GetMapping("/rest")
@@ -60,7 +57,7 @@ public class RestController {
     public ContainerNode<ObjectNode> getInvalidDates() {
 
         ArrayNode arrayNode = jsonNode.putArray("invalid");
-        Arrays.stream(dateService.findAllDates()).forEach(arrayNode::add);
+        Arrays.stream(invalidDateService.findAllDates()).forEach(arrayNode::add);
         return jsonNode;
     }
 
@@ -93,31 +90,42 @@ public class RestController {
         LocalDate date2 = LocalDate.parse(vacation[1], dateFormat);
         long days = ChronoUnit.DAYS.between(date, date2) + 1;
         user.setVacationDaysCount((int) days);
-
+        List<SelectedDate> selectedDates = new ArrayList<>();
         while (!date.isAfter(date2)) {
             SelectedDate selectedDate = new SelectedDate();
             selectedDate.setDate(date.toString());
-            if (dateService.countSelectedDateByDate(selectedDate.getDate())>1) {
-                dateService.save(selectedDate);
+            selectedDates.add(selectedDate);
+            InvalidDate invalidDate = new InvalidDate();
+            invalidDate.setDate(selectedDate.getDate());
+            if (dateService.countSelectedDateByDate(selectedDate.getDate()) + 1 > 1) {
+                invalidDateService.save(invalidDate);
             }
-            dateService.save(selectedDate);
+//            dateService.save(selectedDate);
             date = date.plusDays(1);
         }
+        user.setSelectedDates(selectedDates);
 
     }
 
     @DeleteMapping("/rest/{id}")
     public void deleteUser(@PathVariable long id) {
         User user = userService.findUserById(id);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate date = LocalDate.parse(user.getVacationStart(), dateFormat);
-        LocalDate date2 = LocalDate.parse(user.getVacationEnd(), dateFormat);
-
-        while (!date.isAfter(date2)) {
-            SelectedDate selectedDate = dateService.findByDate(date.toString());
-            dateService.deleteById(selectedDate.getId());
-            date = date.plusDays(1);
+        List<SelectedDate> selectedDates = user.getSelectedDates();
+        for (SelectedDate selectedDate : selectedDates) {
+            String reference = selectedDate.getDate();
+            if (invalidDateService.findByDate(reference) != null) {
+                invalidDateService.deleteByDate(reference);
+            }
         }
+//        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+//        LocalDate date = LocalDate.parse(user.getVacationStart(), dateFormat);
+//        LocalDate date2 = LocalDate.parse(user.getVacationEnd(), dateFormat);
+//
+//        while (!date.isAfter(date2)) {
+//            SelectedDate selectedDate = dateService.findByDate(date.toString());
+//            dateService.deleteById(selectedDate.getId());
+//            date = date.plusDays(1);
+//        }
 
         userService.deleteById(id);
     }

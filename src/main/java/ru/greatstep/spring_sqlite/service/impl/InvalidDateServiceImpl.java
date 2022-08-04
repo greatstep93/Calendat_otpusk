@@ -9,7 +9,7 @@ import ru.greatstep.spring_sqlite.service.absctract.InvalidDateService;
 import java.util.List;
 
 @Service
-public class InvalidDateServiceImpl implements InvalidDateService{
+public class InvalidDateServiceImpl implements InvalidDateService {
 
     InvalidDateRepository invalidRepository;
 
@@ -35,13 +35,13 @@ public class InvalidDateServiceImpl implements InvalidDateService{
     }
 
     @Override
-    public void save(InvalidDate selectedDate) {
-        invalidRepository.save(selectedDate);
+    public void save(InvalidDate invalidDate) {
+        invalidRepository.save(invalidDate);
     }
 
     @Override
-    public void saveAndFlush(InvalidDate selectedDate) {
-        invalidRepository.saveAndFlush(selectedDate);
+    public void saveAndFlush(InvalidDate invalidDate) {
+        invalidRepository.saveAndFlush(invalidDate);
     }
 
     @Override
@@ -62,5 +62,9 @@ public class InvalidDateServiceImpl implements InvalidDateService{
     @Override
     public int countInvalidDateByDate(String date) {
         return invalidRepository.countInvalidDateByDate(date);
+    }
+
+    public void deleteByDate(String date) {
+        invalidRepository.deleteByDate(date);
     }
 }

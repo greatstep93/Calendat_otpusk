@@ -63,12 +63,12 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void initializationTestUsers() {
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 8; i <= 8; i++) {
             User user = new User();
             user.setFullName("Работник" + i);
             user.setPosition("СОП");
             List<SelectedDate> selectedDates = new ArrayList<>();
-            for (int j = 1; j <= 28; j++) {
+            for (int j = 1; j <= 5; j++) {
                 SelectedDate selectedDate = new SelectedDate();
                 String dateOfString;
                 if (i < 10 && j < 10) {
@@ -84,7 +84,7 @@ public class UserServiceImp implements UserService {
                 Date date = Date.valueOf(dateOfString);
                 selectedDate.setDate(date.toString());
                 selectedDates.add(selectedDate);
-                datesRepository.save(selectedDate);
+//                datesRepository.save(selectedDate);
             }
             user.setSelectedDates(selectedDates);
             user.setVacationDaysCount(selectedDates.size());

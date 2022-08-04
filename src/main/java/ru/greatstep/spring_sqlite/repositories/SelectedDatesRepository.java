@@ -20,4 +20,6 @@ public interface SelectedDatesRepository extends JpaRepository<SelectedDate, Lon
     boolean existsSelectedDateByDate(String date);
 
     int countSelectedDateByDate(String date);
+
+
 }

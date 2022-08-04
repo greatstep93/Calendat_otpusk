@@ -19,4 +19,8 @@ public interface SelectedDateService {
     void deleteById(Long id);
 
     String[] findAllDates();
+
+    boolean existsSelectedDateByDate(String date);
+
+    int countSelectedDateByDate(String date);
 }

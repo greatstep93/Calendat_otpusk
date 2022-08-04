@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.sql.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.greatstep.spring_sqlite.models.SelectedDate;
@@ -95,25 +94,16 @@ public class RestController {
         long days = ChronoUnit.DAYS.between(date, date2) + 1;
         user.setVacationDaysCount((int) days);
 
-
-//        while (!date.isAfter(date2)) {
-//            totalDates.add(date);
-//            date = date.plusDays(1);
-//        }
-
         while (!date.isAfter(date2)) {
             SelectedDate selectedDate = new SelectedDate();
             selectedDate.setDate(date.toString());
+            if (dateService.countSelectedDateByDate(selectedDate.getDate())>1) {
+                dateService.save(selectedDate);
+            }
             dateService.save(selectedDate);
             date = date.plusDays(1);
         }
 
-
-//        for (int i = 0; i < totalDates.size(); i++) {
-//
-//            totalDatesToString.add(String.valueOf(totalDates.get(i)));
-//            System.out.println(totalDatesToString);
-//        }
     }
 
     @DeleteMapping("/rest/{id}")
@@ -123,24 +113,11 @@ public class RestController {
         LocalDate date = LocalDate.parse(user.getVacationStart(), dateFormat);
         LocalDate date2 = LocalDate.parse(user.getVacationEnd(), dateFormat);
 
-//        while (!date.isAfter(date2)) {
-//            deleteDates.add(date);
-//            date = date.plusDays(1);
-//        }
-
         while (!date.isAfter(date2)) {
             SelectedDate selectedDate = dateService.findByDate(date.toString());
             dateService.deleteById(selectedDate.getId());
             date = date.plusDays(1);
         }
-
-
-//        for (int i = 0; i < deleteDates.size(); i++) {
-//            totalDatesToString.remove(String.valueOf(totalDates.get(i)));
-//            totalDates.remove(deleteDates.get(i));
-//            System.out.println(totalDatesToString);
-//        }
-
 
         userService.deleteById(id);
     }

@@ -16,4 +16,8 @@ public interface SelectedDatesRepository extends JpaRepository<SelectedDate, Lon
 
     @Query(value = "select date from SelectedDate")
     String[] findAllDates();
+
+    boolean existsSelectedDateByDate(String date);
+
+    int countSelectedDateByDate(String date);
 }

@@ -2,18 +2,19 @@ package ru.greatstep.spring_sqlite.models;
 
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
-@EqualsAndHashCode
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class SelectedDate {
+public class InvalidDate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "selected_date_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invalid_date_id")
     Long id;
 
     @Column

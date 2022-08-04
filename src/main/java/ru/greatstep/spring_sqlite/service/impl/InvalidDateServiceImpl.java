@@ -1,0 +1,66 @@
+package ru.greatstep.spring_sqlite.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.greatstep.spring_sqlite.models.InvalidDate;
+import ru.greatstep.spring_sqlite.repositories.InvalidDateRepository;
+import ru.greatstep.spring_sqlite.service.absctract.InvalidDateService;
+
+import java.util.List;
+
+@Service
+public class InvalidDateServiceImpl implements InvalidDateService{
+
+    InvalidDateRepository invalidRepository;
+
+    @Autowired
+    public InvalidDateServiceImpl(InvalidDateRepository invalidRepository) {
+        this.invalidRepository = invalidRepository;
+    }
+
+
+    @Override
+    public List<InvalidDate> findAll() {
+        return invalidRepository.findAll();
+    }
+
+    @Override
+    public InvalidDate findByDate(String date) {
+        return invalidRepository.findByDate(date);
+    }
+
+    @Override
+    public InvalidDate findInvalidDateById(Long id) {
+        return invalidRepository.findInvalidDateById(id);
+    }
+
+    @Override
+    public void save(InvalidDate selectedDate) {
+        invalidRepository.save(selectedDate);
+    }
+
+    @Override
+    public void saveAndFlush(InvalidDate selectedDate) {
+        invalidRepository.saveAndFlush(selectedDate);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        invalidRepository.deleteById(id);
+    }
+
+    @Override
+    public String[] findAllDates() {
+        return invalidRepository.findAllDates();
+    }
+
+    @Override
+    public boolean existsInvalidDateByDate(String date) {
+        return invalidRepository.existsInvalidDateByDate(date);
+    }
+
+    @Override
+    public int countInvalidDateByDate(String date) {
+        return invalidRepository.countInvalidDateByDate(date);
+    }
+}

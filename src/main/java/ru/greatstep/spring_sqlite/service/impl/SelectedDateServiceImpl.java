@@ -53,4 +53,14 @@ public class SelectedDateServiceImpl implements SelectedDateService {
     public String[] findAllDates() {
         return dateRepository.findAllDates();
     }
+
+    @Override
+    public boolean existsSelectedDateByDate(String date) {
+        return dateRepository.existsSelectedDateByDate(date);
+    }
+    @Override
+    public int countSelectedDateByDate(String date){
+        return dateRepository.countSelectedDateByDate(date);
+    }
+
 }

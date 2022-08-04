@@ -19,7 +19,7 @@ public interface UserService {
     void deleteById(long id);
     void initializationTestUsers();
 
-
+    void parseVacation(User user);
 
 
 

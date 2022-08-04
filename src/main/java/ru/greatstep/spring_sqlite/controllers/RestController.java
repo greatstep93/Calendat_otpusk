@@ -38,7 +38,6 @@ public class RestController {
 
     ObjectNode jsonNode = objectMapper.createObjectNode();
 
-
     @Autowired
     public RestController(UserService userService, SelectedDateService dateService, InvalidDateService invalidDateService) {
         this.userService = userService;
@@ -68,7 +67,7 @@ public class RestController {
 
     @PostMapping("/rest")
     public User addNewUser(@RequestBody User user) {
-        parseVacation(user);
+        userService.parseVacation(user);
 
         userService.save(user);
         return user;
@@ -76,36 +75,35 @@ public class RestController {
 
     @PutMapping("/rest/{id}")
     public User updateUser(@RequestBody User user) {
-        parseVacation(user);
+        userService.parseVacation(user);
         userService.saveAndFlush(user);
         return user;
     }
 
-    private void parseVacation(User user) {
-        String[] vacation = user.getVacation().split(" - ");
-        user.setVacationStart(vacation[0]);
-        user.setVacationEnd(vacation[1]);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate date = LocalDate.parse(vacation[0], dateFormat);
-        LocalDate date2 = LocalDate.parse(vacation[1], dateFormat);
-        long days = ChronoUnit.DAYS.between(date, date2) + 1;
-        user.setVacationDaysCount((int) days);
-        List<SelectedDate> selectedDates = new ArrayList<>();
-        while (!date.isAfter(date2)) {
-            SelectedDate selectedDate = new SelectedDate();
-            selectedDate.setDate(date.toString());
-            selectedDates.add(selectedDate);
-            InvalidDate invalidDate = new InvalidDate();
-            invalidDate.setDate(selectedDate.getDate());
-            if (dateService.countSelectedDateByDate(selectedDate.getDate()) + 1 > 1) {
-                invalidDateService.save(invalidDate);
-            }
-//            dateService.save(selectedDate);
-            date = date.plusDays(1);
-        }
-        user.setSelectedDates(selectedDates);
-
-    }
+//    private void parseVacation(User user) {
+//        String[] vacation = user.getVacation().split(" - ");
+//        user.setVacationStart(vacation[0]);
+//        user.setVacationEnd(vacation[1]);
+//        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+//        LocalDate date = LocalDate.parse(vacation[0], dateFormat);
+//        LocalDate date2 = LocalDate.parse(vacation[1], dateFormat);
+//        long days = ChronoUnit.DAYS.between(date, date2) + 1;
+//        user.setVacationDaysCount((int) days);
+//        List<SelectedDate> selectedDates = new ArrayList<>();
+//        while (!date.isAfter(date2)) {
+//            SelectedDate selectedDate = new SelectedDate();
+//            selectedDate.setDate(date.toString());
+//            selectedDates.add(selectedDate);
+//            InvalidDate invalidDate = new InvalidDate();
+//            invalidDate.setDate(selectedDate.getDate());
+//            if (dateService.countSelectedDateByDate(selectedDate.getDate()) + 1 > 1) {
+//                invalidDateService.save(invalidDate);
+//            }
+//            date = date.plusDays(1);
+//        }
+//        user.setSelectedDates(selectedDates);
+//
+//    }
 
     @DeleteMapping("/rest/{id}")
     public void deleteUser(@PathVariable long id) {
@@ -117,15 +115,6 @@ public class RestController {
                 invalidDateService.deleteByDate(reference);
             }
         }
-//        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-//        LocalDate date = LocalDate.parse(user.getVacationStart(), dateFormat);
-//        LocalDate date2 = LocalDate.parse(user.getVacationEnd(), dateFormat);
-//
-//        while (!date.isAfter(date2)) {
-//            SelectedDate selectedDate = dateService.findByDate(date.toString());
-//            dateService.deleteById(selectedDate.getId());
-//            date = date.plusDays(1);
-//        }
 
         userService.deleteById(id);
     }

@@ -38,6 +38,9 @@ public class User {
     @Column(name = "vacation")
     private String vacation;
 
+//    @Column(name = "available_days_count")
+//    private int availableDaysCount;
+
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "users_dates",
             joinColumns = @JoinColumn(name = "user_id"),

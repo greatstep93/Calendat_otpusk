@@ -15,10 +15,10 @@ public class InvalidDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invalid_date_id")
-    Long id;
+    private Long id;
 
     @Column
-    String date;
+    private String date;
 
     @Override
     public String toString() {

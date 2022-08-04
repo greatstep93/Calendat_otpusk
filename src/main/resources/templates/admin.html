@@ -32,7 +32,10 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="navbar-nav ml-md-auto">
                         <li class="nav-item active">
-                            <button class="btn-primary" onclick="window.location.href = '/admin/export';">Export Table</button>
+                            <button class="btn-warning" id="deleteAll" style="margin-right: 12px">Удалить всё</button>
+                        </li>
+                        <li class="nav-item active">
+                            <button class="btn-primary" onclick="window.location.href = '/admin/export';">Сохранить в таблицу EXCEL</button>
                         </li>
                     </ul>
                 </div>
@@ -87,12 +90,27 @@
             </ul>
 
             <!--            Заголовок таблицы-->
-            <div>
-                <h5 style="margin: 10px">
-                    Сотрудники
-                </h5>
-
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 style="margin: 10px">
+                            Сотрудники
+                        </h5>
+                    </div>
+                </div>
             </div>
+
+<!--            <div class="col-md-11" style="align-items: center">-->
+<!--                <h5 style="margin: 10px">-->
+<!--                    Сотрудники-->
+<!--                </h5>-->
+<!--            </div>-->
+<!--            <div class="col-md-1" style="align-items: center">-->
+<!--                <h5 style="margin: 10px">-->
+<!--                    Сотрудники-->
+<!--                </h5>-->
+<!--            </div>-->
+
             <!--Таблица-->
             <table class="table table-hover" style="background-color: white" id="tableUsers">
                 <!--Шапка таблицы-->

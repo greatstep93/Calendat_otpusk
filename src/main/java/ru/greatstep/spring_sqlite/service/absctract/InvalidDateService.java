@@ -26,4 +26,5 @@ public interface InvalidDateService {
     int countInvalidDateByDate(String date);
 
     void deleteByDate(String date);
+
 }

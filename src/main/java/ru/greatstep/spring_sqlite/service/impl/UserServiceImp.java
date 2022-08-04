@@ -1,19 +1,19 @@
 package ru.greatstep.spring_sqlite.service.impl;
 
-
-import org.hibernate.sql.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.greatstep.spring_sqlite.models.InvalidDate;
 import ru.greatstep.spring_sqlite.models.SelectedDate;
 import ru.greatstep.spring_sqlite.models.User;
-import ru.greatstep.spring_sqlite.repositories.SelectedDatesRepository;
 import ru.greatstep.spring_sqlite.repositories.UserRepository;
+import ru.greatstep.spring_sqlite.service.absctract.InvalidDateService;
+import ru.greatstep.spring_sqlite.service.absctract.SelectedDateService;
 import ru.greatstep.spring_sqlite.service.absctract.UserService;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +23,15 @@ public class UserServiceImp implements UserService {
 
     private UserRepository userRepository;
 
-    private SelectedDatesRepository datesRepository;
+    private SelectedDateService dateService;
+
+    private InvalidDateService invalidDateService;
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository, SelectedDatesRepository datesRepository) {
+    public void setUserRepository(UserRepository userRepository, SelectedDateService dateService, InvalidDateService invalidDateService) {
         this.userRepository = userRepository;
-        this.datesRepository = datesRepository;
+        this.dateService = dateService;
+        this.invalidDateService = invalidDateService;
     }
 
     @Override
@@ -61,14 +64,44 @@ public class UserServiceImp implements UserService {
         userRepository.deleteById(id);
     }
 
+    public void parseVacation(User user) {
+        String[] vacation = user.getVacation().split(" - ");
+
+        user.setVacationStart(vacation[0]);
+        user.setVacationEnd(vacation[1]);
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(vacation[0], dateFormat);
+        LocalDate date2 = LocalDate.parse(vacation[1], dateFormat);
+
+        long days = ChronoUnit.DAYS.between(date, date2) + 1;
+
+        user.setVacationDaysCount((int) days);
+        List<SelectedDate> selectedDates = new ArrayList<>();
+
+        while (!date.isAfter(date2)) {
+            SelectedDate selectedDate = new SelectedDate();
+            selectedDate.setDate(date.toString());
+            selectedDates.add(selectedDate);
+            InvalidDate invalidDate = new InvalidDate();
+            invalidDate.setDate(selectedDate.getDate());
+            if (dateService.countSelectedDateByDate(selectedDate.getDate()) + 1 > 1) {
+                invalidDateService.save(invalidDate);
+            }
+            date = date.plusDays(1);
+        }
+        user.setSelectedDates(selectedDates);
+    }
+
+
     @Override
     public void initializationTestUsers() {
-        for (int i = 8; i <= 8; i++) {
+        for (int i = 1; i <= 12; i++) {
             User user = new User();
             user.setFullName("Работник" + i);
             user.setPosition("СОП");
             List<SelectedDate> selectedDates = new ArrayList<>();
-            for (int j = 1; j <= 5; j++) {
+            for (int j = 1; j <= 28; j++) {
                 SelectedDate selectedDate = new SelectedDate();
                 String dateOfString;
                 if (i < 10 && j < 10) {
@@ -84,12 +117,9 @@ public class UserServiceImp implements UserService {
                 Date date = Date.valueOf(dateOfString);
                 selectedDate.setDate(date.toString());
                 selectedDates.add(selectedDate);
-//                datesRepository.save(selectedDate);
             }
             user.setSelectedDates(selectedDates);
             user.setVacationDaysCount(selectedDates.size());
-//            user.setVacationStart(selectedDates.get(0).getDate());
-//            user.setVacationEnd(selectedDates.get(selectedDates.size() - 1).getDate());
 
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.parse(selectedDates.get(0).getDate(), dateFormat);

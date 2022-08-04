@@ -15,8 +15,8 @@ import javax.persistence.*;
 public class Holidays {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "holidays_id")
-    Long id;
+    private Long id;
 
     @Column
-    String date;
+    private String date;
 }

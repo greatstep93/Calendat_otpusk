@@ -14,10 +14,10 @@ public class SelectedDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "selected_date_id")
-    Long id;
+    private Long id;
 
     @Column
-    String date;
+    private String date;
 
     @Override
     public String toString() {

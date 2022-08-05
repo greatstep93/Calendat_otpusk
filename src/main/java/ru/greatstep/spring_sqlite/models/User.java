@@ -42,7 +42,9 @@ public class User {
     @JoinColumn(name = "worker_id")
     private Worker worker;
 
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "active_worker_id")
+    private ActiveWorker activeWorker;
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "users_dates",

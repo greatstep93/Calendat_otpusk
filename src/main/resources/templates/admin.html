@@ -27,7 +27,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark static-top">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top" style="background-color: #25bce9;">
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
@@ -36,8 +36,8 @@
                     <!---Левая часть шапки-->
                     <ul class="navbar-nav ml-md-left">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                Список сотрудников
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                Ткаченко Дмитрий Алексеевич
                             </button>
                             <div class="dropdown-menu">
                                 <button class="dropdown-item" type="button">Действие</button>
@@ -51,10 +51,10 @@
                     <!---Правая часть шапки-->
                     <ul class="navbar-nav ml-md-auto">
                         <li class="nav-item active">
-                            <button class="btn-warning" id="deleteAll" style="margin-right: 12px">Удалить всё</button>
+                            <button class="btn btn-warning" id="deleteAll" style="margin-right: 12px">Удалить всё</button>
                         </li>
                         <li class="nav-item active">
-                            <button class="btn-primary" onclick="window.location.href = '/admin/export';">Сохранить в таблицу EXCEL</button>
+                            <button class="btn btn-primary" onclick="window.location.href = '/admin/export';">Сохранить в таблицу EXCEL</button>
                         </li>
                     </ul>
                 </div>
@@ -74,19 +74,12 @@
                 </h2>
             </div>
             <!--Панель навигации-->
-<!--            <ul class="nav nav-tabs" style="text-align: center;display: block">-->
-
-
-
-
-<!--            </ul>-->
-
 
             <ul class="nav nav-tabs" style="text-align: center;display: block">
 
                 <li class="nav nav-item" id="formNewWorker">
 
-                    <button class="btn-info" id="SliderNewWorker" >Добавить работника</button>
+                    <button class="btn btn-info" id="SliderNewWorker" >Добавить работника</button>
                     <br>
 
                     <div class="col-md-12" >
@@ -96,9 +89,9 @@
                                 <div class="form-group">
                                     <br>
                                     <form class="form-inline" id="defaultSomeForm2" data-hidden=true style="display: none;margin-right: 30px" >
-                                        <input  class="form-control" id="AddNewWorkerFullName" type="text" placeholder="ФИО">
-                                        <input class="form-control" id="AddNewWorkerPosition" type="text" placeholder="Должность">
-                                        <input class="form-control" id="AddNewWorkerDaysCount" placeholder="Количество дней отпуска на 1 января"/>
+                                        <input class="form-control" id="AddNewWorkerFullName" type="text" placeholder="ФИО" style="margin-right: 10px">
+                                        <input class="form-control" id="AddNewWorkerPosition" type="text" placeholder="Должность" style="margin-right: 10px">
+                                        <input class="form-control" id="AddNewWorkerDaysCount" type="number" placeholder="Кол-во дней на 01.01"/>
 
                                         <button class="btn btn-primary mb-2"  type="button"  id="addNewWorkerButton" style="margin-left: 10px;margin-top: 10px" >Добавить сотрудника</button>
                                     </form>
@@ -113,7 +106,7 @@
 
                 <li class="nav nav-item" id="formNewUser">
 
-                        <button class="btn-primary" type="button" id="SliderNewUserForm">Добавить отпуск</button>
+                        <button class="btn btn-primary" type="button" id="SliderNewUserForm">Добавить отпуск</button>
                     <br>
 
                    <div class="col-md-12" >

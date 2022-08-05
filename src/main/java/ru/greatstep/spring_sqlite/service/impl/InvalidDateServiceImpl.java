@@ -63,8 +63,10 @@ public class InvalidDateServiceImpl implements InvalidDateService {
     public int countInvalidDateByDate(String date) {
         return invalidRepository.countInvalidDateByDate(date);
     }
-
+    @Override
     public void deleteByDate(String date) {
         invalidRepository.deleteByDate(date);
     }
+    @Override
+    public void deleteAll(){ invalidRepository.deleteAll();}
 }

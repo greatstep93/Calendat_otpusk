@@ -27,4 +27,6 @@ public interface InvalidDateService {
 
     void deleteByDate(String date);
 
+    void deleteAll();
+
 }

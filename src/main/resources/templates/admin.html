@@ -30,6 +30,25 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark static-top">
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    <!---Кнопка добавить работника-->
+
+                    <!---Левая часть шапки-->
+                    <ul class="navbar-nav ml-md-left">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                Список сотрудников
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" type="button">Действие</button>
+                                <button class="dropdown-item" type="button">Другое действие</button>
+                                <button class="dropdown-item" type="button">Что-то еще здесь</button>
+                            </div>
+                        </div>
+                    </ul>
+
+
+                    <!---Правая часть шапки-->
                     <ul class="navbar-nav ml-md-auto">
                         <li class="nav-item active">
                             <button class="btn-warning" id="deleteAll" style="margin-right: 12px">Удалить всё</button>
@@ -39,6 +58,7 @@
                         </li>
                     </ul>
                 </div>
+
             </nav>
         </div>
     </div>
@@ -54,21 +74,51 @@
                 </h2>
             </div>
             <!--Панель навигации-->
+<!--            <ul class="nav nav-tabs" style="text-align: center;display: block">-->
+
+
+
+
+<!--            </ul>-->
+
 
             <ul class="nav nav-tabs" style="text-align: center;display: block">
 
-               <li class="nav-item" id="newUserLink" >
+                <li class="nav nav-item" id="formNewWorker">
 
+                    <button class="btn-info" id="SliderNewWorker" >Добавить работника</button>
+                    <br>
+
+                    <div class="col-md-12" >
+                        <div class="container-fluid" align="left">
+                            <div class="d-flex justify-content-left" style="margin-left: -30px">
+                                <br>
+                                <div class="form-group">
+                                    <br>
+                                    <form class="form-inline" id="defaultSomeForm2" data-hidden=true style="display: none;margin-right: 30px" >
+                                        <input  class="form-control" id="AddNewWorkerFullName" type="text" placeholder="ФИО">
+                                        <input class="form-control" id="AddNewWorkerPosition" type="text" placeholder="Должность">
+                                        <input class="form-control" id="AddNewWorkerDaysCount" placeholder="Количество дней отпуска на 1 января"/>
+
+                                        <button class="btn btn-primary mb-2"  type="button"  id="addNewWorkerButton" style="margin-left: 10px;margin-top: 10px" >Добавить сотрудника</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </li>
+
+
 
                 <li class="nav nav-item" id="formNewUser">
 
-                        <button class="btn-primary" type="button" id="SliderNewUserForm">Добавить сотрудника</button>
+                        <button class="btn-primary" type="button" id="SliderNewUserForm">Добавить отпуск</button>
                     <br>
 
-                   <div class="col-md-12" style="align-items: center">
-                    <div class="container-fluid" align="center">
-                        <div class="d-flex justify-content-center">
+                   <div class="col-md-12" >
+                    <div class="container-fluid" align="left">
+                        <div class="d-flex justify-content-left" style="margin-left: -30px">
                             <br>
                             <div class="form-group">
                                 <br>
@@ -77,9 +127,8 @@
                                     <input class="form-control" id="AddNewUserPosition" type="text" placeholder="Должность">
                                     <input class="form-control" id="AddNewUserVacation" placeholder="Отпуск"/>
 
-                                    <button class="btn btn-primary mb-2"  type="button"  id="addNewUserButton" style="margin-top: 10px" >Добавить сотрудника</button>
+                                    <button class="btn btn-primary mb-2"  type="button"  id="addNewUserButton" style="margin-left: 10px;margin-top: 10px" >Добавить отпуск</button>
                                 </form>
-
                             </div>
 
                         </div>
@@ -99,17 +148,6 @@
                     </div>
                 </div>
             </div>
-
-<!--            <div class="col-md-11" style="align-items: center">-->
-<!--                <h5 style="margin: 10px">-->
-<!--                    Сотрудники-->
-<!--                </h5>-->
-<!--            </div>-->
-<!--            <div class="col-md-1" style="align-items: center">-->
-<!--                <h5 style="margin: 10px">-->
-<!--                    Сотрудники-->
-<!--                </h5>-->
-<!--            </div>-->
 
             <!--Таблица-->
             <table class="table table-hover" style="background-color: white" id="tableUsers">

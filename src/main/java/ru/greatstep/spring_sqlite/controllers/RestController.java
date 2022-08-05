@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.greatstep.spring_sqlite.models.InvalidDate;
 import ru.greatstep.spring_sqlite.models.SelectedDate;
 import ru.greatstep.spring_sqlite.models.User;
+import ru.greatstep.spring_sqlite.models.Worker;
 import ru.greatstep.spring_sqlite.service.absctract.InvalidDateService;
 import ru.greatstep.spring_sqlite.service.absctract.SelectedDateService;
 import ru.greatstep.spring_sqlite.service.absctract.UserService;
+import ru.greatstep.spring_sqlite.service.absctract.WorkerService;
 
 
 import java.time.LocalDate;
@@ -34,15 +36,19 @@ public class RestController {
 
     private final InvalidDateService invalidDateService;
 
+    private final WorkerService workerService;
+
     ObjectMapper objectMapper = new ObjectMapper();
 
     ObjectNode jsonNode = objectMapper.createObjectNode();
 
     @Autowired
-    public RestController(UserService userService, SelectedDateService dateService, InvalidDateService invalidDateService) {
+    public RestController(UserService userService, SelectedDateService dateService,
+                          InvalidDateService invalidDateService,WorkerService workerService) {
         this.userService = userService;
         this.dateService = dateService;
         this.invalidDateService = invalidDateService;
+        this.workerService = workerService;
     }
 
     @GetMapping("/rest")
@@ -65,10 +71,15 @@ public class RestController {
         return userService.findUserById(id);
     }
 
+    @PostMapping("/rest/new-worker")
+    public Worker addNewWorker(@RequestBody Worker worker) {
+        workerService.save(worker);
+        return worker;
+    }
+
     @PostMapping("/rest")
     public User addNewUser(@RequestBody User user) {
         userService.parseVacation(user);
-
         userService.save(user);
         return user;
     }
@@ -117,6 +128,12 @@ public class RestController {
         }
 
         userService.deleteById(id);
+    }
+
+    @DeleteMapping("/rest/delete-all")
+    public void deleteAllUsers() {
+        invalidDateService.deleteAll();
+        userService.deleteAll();
     }
 
 }

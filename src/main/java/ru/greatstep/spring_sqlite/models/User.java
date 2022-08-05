@@ -38,8 +38,11 @@ public class User {
     @Column(name = "vacation")
     private String vacation;
 
-//    @Column(name = "available_days_count")
-//    private int availableDaysCount;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "worker_id")
+    private Worker worker;
+
+
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "users_dates",

@@ -21,6 +21,8 @@ public interface UserService {
 
     void parseVacation(User user);
 
+    void deleteAll();
+
 
 
 }

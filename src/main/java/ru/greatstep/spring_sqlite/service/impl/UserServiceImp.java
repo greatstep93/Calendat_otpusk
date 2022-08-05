@@ -64,6 +64,9 @@ public class UserServiceImp implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteAll(){userRepository.deleteAll();}
+
     public void parseVacation(User user) {
         String[] vacation = user.getVacation().split(" - ");
 
@@ -137,5 +140,4 @@ public class UserServiceImp implements UserService {
 
         }
     }
-
 }
